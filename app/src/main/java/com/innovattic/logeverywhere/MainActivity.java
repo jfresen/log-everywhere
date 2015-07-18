@@ -23,14 +23,15 @@ public class MainActivity extends Activity
 		ButterKnife.bind(this);
 	}
 
-//	@OnClick(R.id.grant_permission)
+	//	@OnClick(R.id.grant_permission)
 //	protected void grantPermission()
 //	{
 //		try {
 //			final java.lang.Process process = Runtime.getRuntime().exec(
 //					"pm grant com.innovattic.logeverywhere android.permission.READ_LOGS"
 //			);
-//			final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//			final BufferedReader reader = new BufferedReader(new InputStreamReader(process
+// .getInputStream()));
 //			String line = "";
 //			while ((line = reader.readLine()) != null) {
 //				Toast.makeText(this, line, Toast.LENGTH_SHORT).show();
