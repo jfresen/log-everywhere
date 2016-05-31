@@ -11,8 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 // Handler that receives messages from the thread
-public class LogcatHandler extends Handler
-{
+public class LogcatHandler extends Handler {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = LogcatHandler.class.getSimpleName();
@@ -23,44 +22,38 @@ public class LogcatHandler extends Handler
 	private boolean mStopped;
 	private long mLastToast = Long.MIN_VALUE;
 
-	public LogcatHandler(final Service service, final Looper looper)
-	{
+	public LogcatHandler(final Service service, final Looper looper) {
 		super(looper);
 		mService = service;
 		mStarted = false;
 		mStopped = false;
 	}
 
-	public void start(final int startId)
-	{
+	public void start(final int startId) {
 		final Message msg = obtainMessage();
 		msg.arg1 = startId;
 		mStarted = true;
 		sendMessage(msg);
 	}
 
-	public void stop()
-	{
+	public void stop() {
 		mStopped = true;
 	}
 
-	public boolean isStarted()
-	{
+	public boolean isStarted() {
 		return mStarted;
 	}
 
-	public boolean isStopped()
-	{
+	public boolean isStopped() {
 		return mStopped;
 	}
 
 	@Override
-	public void handleMessage(final Message msg)
-	{
+	public void handleMessage(final Message msg) {
 		try {
 			final Process process = Runtime.getRuntime().exec("logcat");
-			final BufferedReader reader = new BufferedReader(new InputStreamReader(process
-					.getInputStream()));
+			final BufferedReader reader = new BufferedReader(
+					new InputStreamReader(process.getInputStream()));
 			String line;
 			while ((line = reader.readLine()) != null && !mStopped) {
 				consume(line);
@@ -73,8 +66,7 @@ public class LogcatHandler extends Handler
 		}
 	}
 
-	private void consume(final String line)
-	{
+	private void consume(final String line) {
 		final long now = System.currentTimeMillis();
 		if (mLastToast < now - INTERVAL) {
 			mLastToast = now;

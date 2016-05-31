@@ -1,0 +1,37 @@
+/**
+ * Retrieves the value of a gradle property, supporting indirect property references. Indirect
+ * referencing works by convention, if a property is called propertyName you can define a boolean
+ * property with the name propertyName.indirect. If that is set to true, the value of propertyName
+ * will be treated as a reference to another property, which in turn can be an indirect property
+ * using the same convention. An exception is thrown when a loop is detected.
+ *
+ * @param name A property name
+ * @param defaultValue The value to return if the property cannot be found
+ * @return The value, following all indirect references
+ */
+ext.resolveProperty = { String name, final String defaultValue=null ->
+    final String originalName = name
+    final List<String> resolvedNames = []
+    String value = name
+    boolean indirect = true
+    while (indirect) {
+        name = value
+        if (resolvedNames.contains(name)) {
+            throw new InvalidUserDataException('Property ' + originalName +
+                    ' contains an indirect reference loop ')
+        }
+        if (hasProperty(name)) {
+            resolvedNames.add(name)
+            value = getProperty(name)
+            if (hasProperty(name + '.indirect')) {
+                indirect = Boolean.parseBoolean(getProperty(name + '.indirect'))
+            } else {
+                indirect = false
+            }
+        } else {
+            return defaultValue
+        }
+    }
+    return value;
+}
+

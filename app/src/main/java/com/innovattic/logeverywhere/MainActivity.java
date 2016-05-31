@@ -10,22 +10,19 @@ import butterknife.OnClick;
 /**
  * Created by Jelle on 6-7-2015.
  */
-public class MainActivity extends Activity
-{
+public class MainActivity extends Activity {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		ButterKnife.bind(this);
 	}
 
 	//	@OnClick(R.id.grant_permission)
-//	protected void grantPermission()
-//	{
+//	protected void grantPermission() {
 //		try {
 //			final java.lang.Process process = Runtime.getRuntime().exec(
 //					"pm grant com.innovattic.logeverywhere android.permission.READ_LOGS"
@@ -43,14 +40,12 @@ public class MainActivity extends Activity
 //	}
 //
 	@OnClick(R.id.start_service)
-	protected void startService()
-	{
+	protected void startService() {
 		startService(new Intent(this, LogService.class));
 	}
 
 	@OnClick(R.id.stop_service)
-	protected void stopService()
-	{
+	protected void stopService() {
 		stopService(new Intent(this, LogService.class));
 	}
 

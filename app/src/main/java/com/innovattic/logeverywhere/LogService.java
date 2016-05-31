@@ -6,8 +6,7 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Process;
 
-public class LogService extends Service
-{
+public class LogService extends Service {
 
 	@SuppressWarnings("unused")
 	private static final String TAG = LogService.class.getSimpleName();
@@ -15,8 +14,7 @@ public class LogService extends Service
 	private LogcatHandler mLogcatHandler;
 
 	@Override
-	public void onCreate()
-	{
+	public void onCreate() {
 		// Start up the thread running the service.  Note that we create a
 		// separate thread because the service normally runs in the process's
 		// main thread, which we don't want to block.  We also make it more
@@ -30,8 +28,7 @@ public class LogService extends Service
 	}
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId)
-	{
+	public int onStartCommand(Intent intent, int flags, int startId) {
 		Util.showToast(this, "service starting");
 
 		// For each start request, send a message to start a job and deliver the
@@ -43,15 +40,13 @@ public class LogService extends Service
 	}
 
 	@Override
-	public IBinder onBind(Intent intent)
-	{
+	public IBinder onBind(Intent intent) {
 		// We don't provide binding, so return null
 		return null;
 	}
 
 	@Override
-	public void onDestroy()
-	{
+	public void onDestroy() {
 		Util.showToast(this, "service stopping");
 		mLogcatHandler.stop();
 	}

@@ -1,25 +1,57 @@
 apply plugin: 'com.android.application'
-
-android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
-
-    defaultConfig {
-        applicationId "com.innovattic.logeverywhere"
-        minSdkVersion 5
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-}
+apply from: rootProject.file('gradle/icontagger.gradle')
+apply from: rootProject.file('gradle/util.gradle')
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.jakewharton:butterknife:7.0.1'
+}
+
+android {
+
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId 'com.innovattic.logeverywhere'
+        minSdkVersion 5
+        targetSdkVersion 22
+        versionCode 1
+        versionName '1.0'
+    }
+
+    signingConfigs {
+
+        final String storePass = resolveProperty('com.innovattic.logeverywhere.keystore.password')
+        final String debugPass = resolveProperty('com.innovattic.logeverywhere.keystore.debug.password')
+        final String releasePass = resolveProperty('com.innovattic.logeverywhere.keystore.release.password')
+
+        debug {
+            storeFile file('app.keystore')
+            keyAlias 'debug'
+            storePassword storePass
+            keyPassword debugPass
+        }
+        release {
+            storeFile file('app.keystore')
+            keyAlias 'release'
+            storePassword storePass
+            keyPassword releasePass
+        }
+    }
+
+    buildTypes {
+        debug {
+            tagLauncherIconWith(debug)
+            applicationIdSuffix '.dbg'
+            versionNameSuffix '-dbg'
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
 }

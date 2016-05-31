@@ -1,0 +1,41 @@
+ext.tagLauncherIconWith = { type ->
+
+    File outputDir = project.file("$project.buildDir/generated/tagged-icons/" + type.name)
+
+    // Add our generated dir to list of build-type sources
+    // We can't use variant.registerResGeneratingTask, because it'll add our directory to the
+    // variant-specific source set (app/src/main/res), which already contains a launcher icon.
+    android.sourceSets.matching({ it.name == type.name }).each {
+        it.res.srcDirs += outputDir
+    }
+
+    android.applicationVariants.matching({ it.buildType.name == type.name }).all { variant ->
+
+        File inputDir = project.file('src/main/res')
+        Set<File> inputs = fileTree(inputDir).include('**/ic_launcher.png').files
+        // make relative paths (gradle only deals with absolute filenames, but
+        // apptagger works with relative paths)
+        inputs = inputs.collect { inputDir.toURI().relativize(it.toURI()).getPath() }
+        String variantTitle = variant.name.capitalize()
+
+        def tagTask = task "tag${variantTitle}Icons"(type: JavaExec) {
+            main = "-jar"
+            args = [
+                    '../AppIconTagger.jar',
+                    // Input folder
+                    '-input', 'src/main/res',
+                    // Output folder
+                    '-output', outputDir,
+                    // Files to tag
+                    '-files'] + inputs + [
+                    // Text to put in icon
+                    '-text', variantTitle, 'v' + android.defaultConfig.versionName + " (" +
+                            android.defaultConfig.versionCode + ")"
+            ]
+            doFirst {
+                mkdir outputDir
+            }
+        }
+        variant.mergeResources.dependsOn tagTask
+    }
+}
